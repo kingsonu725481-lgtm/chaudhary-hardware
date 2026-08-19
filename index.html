@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chaudhary Hardware & General Store</title>
+  <meta name="description" content="Chaudhary Hardware & General Store - Pipes, fittings, bathroom, electrical, hardware tools, paints and chemicals in Sitamarhi, Bihar.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="#home">
+        <span class="brand-mark">CH</span>
+        <span>
+          <strong>Chaudhary Hardware</strong>
+          <small>& General Store</small>
+        </span>
+      </a>
+      <button class="menu-btn" aria-label="Open menu">☰</button>
+      <nav id="navLinks">
+        <a href="#home">Home</a>
+        <a href="#categories">Categories</a>
+        <a href="#products">Products</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">QUALITY • VALUE • SERVICE</span>
+          <h1>Chaudhary Hardware<br><span>& General Store</span></h1>
+          <p class="tagline">Vishwas Ki Pehchan, Gunvatta Ki Dukaan</p>
+          <p>Har tarah ke pipes, fittings, electrical aur bathroom products ke saath hardware tools aur paints & chemicals — sab ek hi jagah.</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#products">Explore Products</a>
+            <a class="btn whatsapp" href="https://wa.me/916203007753?text=Hello%20Chaudhary%20Hardware%20%26%20General%20Store%2C%20I%20want%20to%20make%20an%20enquiry." target="_blank" rel="noopener">WhatsApp Enquiry</a>
+          </div>
+        </div>
+        <div class="poster-card">
+          <img src="shop-poster.png" alt="Chaudhary Hardware & General Store shop poster">
+        </div>
+      </div>
+    </section>
+
+    <section id="categories" class="section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">SHOP BY CATEGORY</span>
+            <h2>Everything you need in one place</h2>
+          </div>
+        </div>
+        <div id="categoryGrid" class="category-grid"></div>
+      </div>
+    </section>
+
+    <section id="products" class="section alt">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">PRODUCT CATALOG</span>
+            <h2>Featured Products</h2>
+          </div>
+          <div class="controls">
+            <input id="search" type="search" placeholder="Search products..." aria-label="Search products">
+            <select id="categoryFilter" aria-label="Filter by category">
+              <option value="All">All Categories</option>
+            </select>
+          </div>
+        </div>
+        <div id="productGrid" class="product-grid"></div>
+        <p id="emptyState" class="empty" hidden>No products found. Try another search.</p>
+      </div>
+    </section>
+
+    <section id="about" class="section">
+      <div class="container about-grid">
+        <div>
+          <span class="eyebrow">ABOUT US</span>
+          <h2>Trusted local service in Sitamarhi</h2>
+          <p>Welcome to <strong>Chaudhary Hardware & General Store</strong>, your trusted local store in Sitamarhi, Bihar. We provide quality products for plumbing, electrical, bathroom, repair and home-improvement needs.</p>
+          <p>Our range includes Pipes & Fittings, Bathroom Products, Electrical Products, Hardware Tools, and Paints & Chemicals. We focus on quality products, reasonable prices and reliable service.</p>
+        </div>
+        <div class="trust-card">
+          <h3>Why Choose Us?</h3>
+          <div class="trust-list">
+            <span>✓ Quality products</span>
+            <span>✓ Reasonable prices</span>
+            <span>✓ Wide product range</span>
+            <span>✓ Helpful service</span>
+            <span>✓ WhatsApp enquiry</span>
+            <span>✓ Everything in one place</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section contact">
+      <div class="container contact-grid">
+        <div>
+          <span class="eyebrow">CONTACT US</span>
+          <h2>Visit or contact our store</h2>
+          <p><strong>Address:</strong> Madaripur Tower Chowk, Pupri Road, Sitamarhi, Bihar</p>
+          <div class="phones">
+            <a href="tel:+916203007753">6203007753</a>
+            <a href="tel:+919576660776">9576660776</a>
+            <a href="tel:+917254817752">7254817752</a>
+          </div>
+          <div class="hero-actions">
+            <a class="btn whatsapp" href="https://wa.me/916203007753" target="_blank" rel="noopener">WhatsApp Us</a>
+            <a class="btn outline" href="https://www.google.com/maps/search/?api=1&query=Madaripur+Tower+Chowk+Pupri+Road+Sitamarhi+Bihar" target="_blank" rel="noopener">Get Directions</a>
+          </div>
+        </div>
+        <div class="map-card">
+          <iframe
+            title="Chaudhary Hardware & General Store location"
+            src="https://www.google.com/maps?q=Madaripur%20Tower%20Chowk%2C%20Pupri%20Road%2C%20Sitamarhi%2C%20Bihar&output=embed"
+            loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div>
+        <strong>Chaudhary Hardware & General Store</strong>
+        <p>Vishwas Ki Pehchan, Gunvatta Ki Dukaan</p>
+      </div>
+      <p>© <span id="year"></span> Chaudhary Hardware & General Store</p>
+    </div>
+  </footer>
+
+  <a class="floating-wa" href="https://wa.me/916203007753?text=Hello%20Chaudhary%20Hardware%20%26%20General%20Store" target="_blank" rel="noopener" aria-label="WhatsApp">WA</a>
+  <script src="script.js"></script>
+</body>
+</html>
