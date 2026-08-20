@@ -6,17 +6,6 @@ const categories = [
   { name: "Paint & Chemicals", icon: "🎨", desc: "Paints, primers, putty and related chemicals." }
 ];
 
-const products = [
-  { id: 1, name: "PVC Pipe", brand: "Sample Brand", category: "Pipes & Fittings", size: "1 inch", price: 120, icon: "🪠" },
-  { id: 2, name: "PVC Elbow", brand: "Sample Brand", category: "Pipes & Fittings", size: "1 inch", price: 35, icon: "🔩" },
-  { id: 3, name: "Bathroom Tap", brand: "Sample Brand", category: "Bathroom Products", size: "Standard", price: 450, icon: "🚰" },
-  { id: 4, name: "Shower Set", brand: "Sample Brand", category: "Bathroom Products", size: "Standard", price: 799, icon: "🚿" },
-  { id: 5, name: "Modular Switch", brand: "Sample Brand", category: "Electrical Products", size: "6A", price: 85, icon: "💡" },
-  { id: 6, name: "MCB", brand: "Sample Brand", category: "Electrical Products", size: "16A", price: 220, icon: "⚡" },
-  { id: 7, name: "Adjustable Spanner", brand: "Sample Brand", category: "Hardware Tools", size: "10 inch", price: 280, icon: "🔧" },
-  { id: 8, name: "Wall Paint", brand: "Sample Brand", category: "Paint & Chemicals", size: "20 L", price: 2450, icon: "🪣" }
-];
-
 const categoryGrid = document.querySelector("#categoryGrid");
 const productGrid = document.querySelector("#productGrid");
 const search = document.querySelector("#search");
@@ -25,8 +14,20 @@ const emptyState = document.querySelector("#emptyState");
 const menuButton = document.querySelector(".menu-btn");
 const navLinks = document.querySelector("#navLinks");
 
+let products = [];
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (character) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  }[character]));
+}
+
 function formatPrice(price) {
-  return `₹${price.toLocaleString("en-IN")}`;
+  return `₹${Number(price).toLocaleString("en-IN")}`;
 }
 
 function whatsappLink(product) {
@@ -41,43 +42,28 @@ function updateCategoryButtons() {
 }
 
 function renderCategories() {
-  const fragment = document.createDocumentFragment();
+  categoryGrid.innerHTML = categories.map((category) => `
+    <button type="button" class="category-card" data-category="${escapeHtml(category.name)}" aria-pressed="false">
+      <span class="category-icon" aria-hidden="true">${category.icon}</span>
+      <h3>${escapeHtml(category.name)}</h3>
+      <p>${escapeHtml(category.desc)}</p>
+    </button>
+  `).join("");
 
   categories.forEach((category) => {
-    const card = document.createElement("button");
-    card.type = "button";
-    card.className = "category-card";
-    card.dataset.category = category.name;
-    card.setAttribute("aria-pressed", "false");
-    card.innerHTML = `
-      <span class="category-icon" aria-hidden="true">${category.icon}</span>
-      <h3>${category.name}</h3>
-      <p>${category.desc}</p>
-    `;
-
-    card.addEventListener("click", () => {
-      filter.value = category.name;
-      renderProducts();
-      document.querySelector("#products").scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-
-    fragment.appendChild(card);
-
     const option = document.createElement("option");
     option.value = category.name;
     option.textContent = category.name;
     filter.appendChild(option);
   });
-
-  categoryGrid.appendChild(fragment);
 }
 
 function showProductDetails(product) {
   alert(
     `${product.name}\n\n` +
     `Category: ${product.category}\n` +
-    `Brand: ${product.brand}\n` +
-    `Size: ${product.size}\n` +
+    `Brand: ${product.brand || "-"}\n` +
+    `Size: ${product.size || "-"}\n` +
     `Price: ${formatPrice(product.price)}\n\n` +
     `Please contact us on WhatsApp for an enquiry.`
   );
@@ -99,53 +85,53 @@ function renderProducts() {
       (selectedCategory === "All" || product.category === selectedCategory);
   });
 
-  const fragment = document.createDocumentFragment();
+  productGrid.innerHTML = matchingProducts.map((product) => `
+    <article class="product-card">
+      <div class="product-img" aria-label="${escapeHtml(product.name)}">${product.icon || "🛠️"}</div>
+      <div class="product-body">
+        <small>${escapeHtml(product.category)} • ${escapeHtml(product.brand || "—")}</small>
+        <h3>${escapeHtml(product.name)}</h3>
+        <small>Size: ${escapeHtml(product.size || "—")}</small>
+        <div class="price">${formatPrice(product.price)}</div>
+        <div class="product-actions">
+          <a href="${whatsappLink(product)}" target="_blank" rel="noopener">WhatsApp</a>
+          <button type="button" data-details-id="${product.id}">Details</button>
+        </div>
+      </div>
+    </article>
+  `).join("");
 
-  matchingProducts.forEach((product) => {
-    const card = document.createElement("article");
-    card.className = "product-card";
-
-    const image = document.createElement("div");
-    image.className = "product-img";
-    image.setAttribute("aria-label", product.name);
-    image.textContent = product.icon;
-
-    const body = document.createElement("div");
-    body.className = "product-body";
-    body.innerHTML = `
-      <small>${product.category} • ${product.brand}</small>
-      <h3>${product.name}</h3>
-      <small>Size: ${product.size}</small>
-      <div class="price">${formatPrice(product.price)}</div>
-    `;
-
-    const actions = document.createElement("div");
-    actions.className = "product-actions";
-
-    const whatsapp = document.createElement("a");
-    whatsapp.href = whatsappLink(product);
-    whatsapp.target = "_blank";
-    whatsapp.rel = "noopener";
-    whatsapp.textContent = "WhatsApp";
-    whatsapp.setAttribute("aria-label", `Enquire about ${product.name} on WhatsApp`);
-
-    const details = document.createElement("button");
-    details.type = "button";
-    details.textContent = "Details";
-    details.addEventListener("click", () => showProductDetails(product));
-
-    actions.append(whatsapp, details);
-    body.appendChild(actions);
-    card.append(image, body);
-    fragment.appendChild(card);
-  });
-
-  productGrid.replaceChildren(fragment);
   emptyState.hidden = matchingProducts.length > 0;
+  emptyState.textContent = "No products found. Try another search or category.";
   updateCategoryButtons();
 }
 
+async function loadProducts() {
+  productGrid.setAttribute("aria-busy", "true");
+
+  const { data, error } = await storeSupabase
+    .from("store_products")
+    .select("id, name, brand, category, size, price, icon")
+    .order("id", { ascending: true });
+
+  productGrid.removeAttribute("aria-busy");
+
+  if (error) {
+    console.error(error);
+    products = [];
+    productGrid.innerHTML = "";
+    emptyState.hidden = false;
+    emptyState.textContent = "Products could not load. Please refresh the page.";
+    return;
+  }
+
+  products = data || [];
+  renderProducts();
+}
+
 function closeMenu() {
+  if (!menuButton || !navLinks) return;
+
   navLinks.classList.remove("open");
   menuButton.setAttribute("aria-expanded", "false");
   menuButton.setAttribute("aria-label", "Open menu");
@@ -154,23 +140,40 @@ function closeMenu() {
 search.addEventListener("input", renderProducts);
 filter.addEventListener("change", renderProducts);
 
-menuButton.addEventListener("click", () => {
-  const isOpen = navLinks.classList.toggle("open");
-  menuButton.setAttribute("aria-expanded", String(isOpen));
-  menuButton.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
+categoryGrid.addEventListener("click", (event) => {
+  const card = event.target.closest(".category-card");
+  if (!card) return;
+
+  filter.value = card.dataset.category;
+  renderProducts();
+  document.querySelector("#products").scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
-navLinks.querySelectorAll("a").forEach((link) => {
-  link.addEventListener("click", closeMenu);
+productGrid.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-details-id]");
+  if (!button) return;
+
+  const product = products.find((item) => item.id === Number(button.dataset.detailsId));
+  if (product) showProductDetails(product);
 });
 
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") {
-    closeMenu();
-  }
-});
+if (menuButton && navLinks) {
+  menuButton.addEventListener("click", () => {
+    const isOpen = navLinks.classList.toggle("open");
+    menuButton.setAttribute("aria-expanded", String(isOpen));
+    menuButton.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
+  });
+
+  navLinks.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", closeMenu);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeMenu();
+  });
+}
 
 document.querySelector("#year").textContent = new Date().getFullYear();
 
 renderCategories();
-renderProducts();
+loadProducts();

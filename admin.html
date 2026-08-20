@@ -3,24 +3,100 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chaudhary Hardware - Admin</title>
+  <meta name="theme-color" content="#160d0d">
+  <title>Admin | Chaudhary Hardware</title>
   <link rel="stylesheet" href="admin.css">
 </head>
+<body class="admin-page">
+  <header class="admin-topbar">
+    <a class="admin-brand" href="index.html">
+      <span>CH</span>
+      <strong>Chaudhary Hardware</strong>
+    </a>
+    <a class="back-link" href="index.html">← View Website</a>
+  </header>
 
-<body>
+  <main class="admin-container">
+    <section id="loginView" class="login-card">
+      <span class="admin-eyebrow">SECURE ACCESS</span>
+      <h1>Admin Login</h1>
+      <p>Login to manage products and prices.</p>
 
-  <div class="admin-box">
-    <h1>Chaudhary Hardware</h1>
-    <h2>Admin Login</h2>
+      <form id="loginForm">
+        <label for="email">Email</label>
+        <input id="email" type="email" autocomplete="email" required>
 
-    <input type="email" id="email" placeholder="Admin Email">
-    <input type="password" id="password" placeholder="Password">
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" required>
 
-    <button onclick="login()">Login</button>
+        <button class="admin-btn primary-btn" type="submit">Login</button>
+        <p id="loginMessage" class="form-message" aria-live="polite"></p>
+      </form>
+    </section>
 
-    <p id="message"></p>
-  </div>
+    <section id="adminDashboard" hidden>
+      <div class="dashboard-head">
+        <div>
+          <span class="admin-eyebrow">PRODUCT MANAGEMENT</span>
+          <h1>Manage Products</h1>
+          <p>Logged in as <strong id="adminEmail"></strong></p>
+        </div>
+        <button id="logoutButton" class="admin-btn outline-btn" type="button">Logout</button>
+      </div>
 
+      <div class="admin-grid">
+        <section class="admin-card product-form-card">
+          <h2 id="formTitle">Add Product</h2>
+
+          <form id="productForm">
+            <input id="productId" type="hidden">
+
+            <label for="productName">Product Name</label>
+            <input id="productName" type="text" required>
+
+            <label for="productBrand">Brand</label>
+            <input id="productBrand" type="text">
+
+            <label for="productCategory">Category</label>
+            <select id="productCategory" required>
+              <option value="Pipes & Fittings">Pipes & Fittings</option>
+              <option value="Bathroom Products">Bathroom Products</option>
+              <option value="Electrical Products">Electrical Products</option>
+              <option value="Hardware Tools">Hardware Tools</option>
+              <option value="Paint & Chemicals">Paint & Chemicals</option>
+            </select>
+
+            <label for="productSize">Size</label>
+            <input id="productSize" type="text">
+
+            <label for="productPrice">Price (₹)</label>
+            <input id="productPrice" type="number" min="0" step="0.01" required>
+
+            <label for="productIcon">Product Icon</label>
+            <input id="productIcon" type="text" value="🛠️" maxlength="8">
+
+            <div class="form-actions">
+              <button id="saveProductButton" class="admin-btn primary-btn" type="submit">Save Product</button>
+              <button id="cancelEditButton" class="admin-btn outline-btn" type="button" hidden>Cancel</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="admin-card products-list-card">
+          <div class="list-head">
+            <h2>All Products</h2>
+            <span id="productCount" class="count-badge">0</span>
+          </div>
+
+          <p id="adminMessage" class="form-message" aria-live="polite"></p>
+          <div id="adminProducts" class="admin-products"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
   <script src="admin.js"></script>
 </body>
 </html>
