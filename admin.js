@@ -3,7 +3,7 @@
 // ===============================
 
 // ⚠️ इन दोनों को बाद में अपने Supabase Project की जानकारी से बदलना है
-const SUPABASE_URL = "https://vaceuvwahddudgpuivxuh.supabase.co";
+const SUPABASE_URL = "https://vaeuvwahddudgpuivxuh.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_Xw2pfPmdubwhMfGhCdLRPA_S8daMuWa";
 
 let supabaseClient;
