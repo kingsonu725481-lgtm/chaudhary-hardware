@@ -122,12 +122,20 @@ async function showDashboard(session) {
   adminEmail.textContent = session.user.email || "";
   setMessage(adminMessage);
   await loadProducts();
+
+  if (typeof loadPurchaseList === "function") {
+    loadPurchaseList(session.user.id);
+  }
 }
 
 function showLogin() {
   adminDashboard.hidden = true;
   loginView.hidden = false;
   resetProductForm();
+
+  if (typeof switchAdminTab === "function") {
+    switchAdminTab("products");
+  }
 }
 
 loginForm.addEventListener("submit", async (event) => {

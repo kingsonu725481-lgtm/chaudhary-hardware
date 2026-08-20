@@ -37,14 +37,19 @@
     <section id="adminDashboard" hidden>
       <div class="dashboard-head">
         <div>
-          <span class="admin-eyebrow">PRODUCT MANAGEMENT</span>
-          <h1>Manage Products</h1>
+          <span class="admin-eyebrow">ADMIN PANEL</span>
+          <h1>Store Dashboard</h1>
           <p>Logged in as <strong id="adminEmail"></strong></p>
         </div>
         <button id="logoutButton" class="admin-btn outline-btn" type="button">Logout</button>
       </div>
 
-      <div class="admin-grid">
+      <div class="admin-tabs" role="tablist" aria-label="Admin sections">
+        <button id="productsTab" class="admin-tab active" type="button" role="tab" aria-selected="true" aria-controls="productsPanel">Website Products</button>
+        <button id="purchaseTab" class="admin-tab" type="button" role="tab" aria-selected="false" aria-controls="purchasePanel">Kharid List</button>
+      </div>
+
+      <div id="productsPanel" class="admin-grid" role="tabpanel">
         <section class="admin-card product-form-card">
           <h2 id="formTitle">Add Product</h2>
 
@@ -92,11 +97,61 @@
           <div id="adminProducts" class="admin-products"></div>
         </section>
       </div>
+
+      <section id="purchasePanel" hidden role="tabpanel">
+        <div class="admin-card sheet-card">
+          <div class="sheet-toolbar">
+            <div>
+              <h2>Kharid List</h2>
+              <p>Excel jaisi sheet mein apni kharid rakho. Ye list sirf login ke baad dikhti hai.</p>
+            </div>
+            <div class="sheet-actions">
+              <button id="addPurchaseRow" class="admin-btn primary-btn" type="button">Add Row</button>
+              <button id="downloadPurchaseExcel" class="admin-btn outline-btn" type="button">Download Excel</button>
+              <label class="admin-btn outline-btn upload-excel-btn">
+                Upload Excel
+                <input id="uploadPurchaseExcel" type="file" accept=".xlsx,.xls,.csv" hidden>
+              </label>
+            </div>
+          </div>
+
+          <p id="purchaseMessage" class="form-message" aria-live="polite"></p>
+
+          <div class="sheet-wrap">
+            <table id="purchaseSheet" class="purchase-sheet">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Product</th>
+                  <th>Brand</th>
+                  <th>Qty</th>
+                  <th>Unit</th>
+                  <th>Rate (₹)</th>
+                  <th>Amount (₹)</th>
+                  <th>Supplier</th>
+                  <th>Notes</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="purchaseSheetBody"></tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="6">Total kharid</td>
+                  <td id="purchaseTotal">₹0</td>
+                  <td colspan="3"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </section>
     </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="supabase-config.js"></script>
   <script src="admin.js"></script>
+  <script src="purchase-list.js"></script>
 </body>
 </html>

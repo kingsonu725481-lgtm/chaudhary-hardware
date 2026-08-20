@@ -186,6 +186,33 @@ nav a:hover::after {
   transform: scaleX(1);
 }
 
+nav a.admin-login-link {
+  padding: 8px 14px;
+  color: #1a1005;
+  background: var(--gold);
+  border-radius: 999px;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+nav a.admin-login-link::after {
+  display: none;
+}
+
+nav a.admin-login-link:hover {
+  color: #1a1005;
+  background: var(--gold-soft);
+}
+
+.footer-admin-link {
+  color: var(--gold);
+  font-weight: 800;
+}
+
+.footer-admin-link:hover {
+  color: var(--gold-soft);
+}
+
 .menu-btn {
   display: none;
   padding: 5px;
@@ -820,6 +847,11 @@ footer {
 
   nav a {
     padding: 12px 4px;
+  }
+
+  nav a.admin-login-link {
+    width: fit-content;
+    margin-top: 6px;
   }
 
   nav a::after {
