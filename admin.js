@@ -13,6 +13,11 @@ const productCategory = document.querySelector("#productCategory");
 const productSize = document.querySelector("#productSize");
 const productPrice = document.querySelector("#productPrice");
 const productIcon = document.querySelector("#productIcon");
+const productImage = document.querySelector("#productImage");
+const productImageUrl = document.querySelector("#productImageUrl");
+const imagePreviewImg = document.querySelector("#imagePreviewImg");
+const imagePreviewText = document.querySelector("#imagePreviewText");
+const removeImageButton = document.querySelector("#removeImageButton");
 const formTitle = document.querySelector("#formTitle");
 const saveProductButton = document.querySelector("#saveProductButton");
 const cancelEditButton = document.querySelector("#cancelEditButton");
@@ -40,13 +45,39 @@ function setMessage(element, message = "", type = "") {
   element.className = `form-message${type ? ` ${type}` : ""}`;
 }
 
+function setImagePreview(url = "") {
+  productImageUrl.value = url || "";
+
+  if (url) {
+    imagePreviewImg.src = url;
+    imagePreviewImg.hidden = false;
+    imagePreviewText.hidden = true;
+    removeImageButton.hidden = false;
+    return;
+  }
+
+  imagePreviewImg.removeAttribute("src");
+  imagePreviewImg.hidden = true;
+  imagePreviewText.hidden = false;
+  removeImageButton.hidden = true;
+}
+
 function resetProductForm() {
   productForm.reset();
   productId.value = "";
   productIcon.value = "🛠️";
+  setImagePreview("");
   formTitle.textContent = "Add Product";
   saveProductButton.textContent = "Save Product";
   cancelEditButton.hidden = true;
+}
+
+function productThumb(product) {
+  if (product.image_url) {
+    return `<img class="admin-product-photo" src="${escapeHtml(product.image_url)}" alt="">`;
+  }
+
+  return `<div class="admin-product-icon" aria-hidden="true">${product.icon || "🛠️"}</div>`;
 }
 
 function renderProducts() {
@@ -59,7 +90,7 @@ function renderProducts() {
 
   adminProducts.innerHTML = products.map((product) => `
     <article class="admin-product">
-      <div class="admin-product-icon" aria-hidden="true">${product.icon || "🛠️"}</div>
+      ${productThumb(product)}
 
       <div class="admin-product-info">
         <h3>${escapeHtml(product.name)}</h3>
@@ -79,10 +110,17 @@ function renderProducts() {
 async function loadProducts() {
   adminProducts.innerHTML = `<p class="empty-admin">Loading products...</p>`;
 
-  const { data, error } = await storeSupabase
+  let { data, error } = await storeSupabase
     .from("store_products")
-    .select("id, name, brand, category, size, price, icon")
+    .select("id, name, brand, category, size, price, icon, image_url")
     .order("id", { ascending: true });
+
+  if (error && /image_url/i.test(error.message || "")) {
+    ({ data, error } = await storeSupabase
+      .from("store_products")
+      .select("id, name, brand, category, size, price, icon")
+      .order("id", { ascending: true }));
+  }
 
   if (error) {
     console.error(error);
@@ -105,6 +143,8 @@ function startEditing(product) {
   productSize.value = product.size || "";
   productPrice.value = product.price;
   productIcon.value = product.icon || "🛠️";
+  setImagePreview(product.image_url || "");
+  productImage.value = "";
 
   formTitle.textContent = "Edit Product";
   saveProductButton.textContent = "Update Product";
@@ -179,6 +219,79 @@ logoutButton.addEventListener("click", async () => {
   showLogin();
 });
 
+function blobToDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    const objectUrl = URL.createObjectURL(file);
+
+    image.onload = () => {
+      const maxSize = 900;
+      const scale = Math.min(1, maxSize / Math.max(image.width, image.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(image.width * scale));
+      canvas.height = Math.max(1, Math.round(image.height * scale));
+      canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(objectUrl);
+      canvas.toBlob((blob) => {
+        if (blob) resolve(blob);
+        else reject(new Error("Photo compress nahi ho saki."));
+      }, "image/jpeg", 0.74);
+    };
+
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error("Photo padhi nahi ja saki."));
+    };
+
+    image.src = objectUrl;
+  });
+}
+
+async function uploadProductImage(file) {
+  const blob = await compressImage(file);
+  const path = `${Date.now()}-${file.name.replace(/[^\w.-]+/g, "-").toLowerCase()}.jpg`;
+
+  const { error } = await storeSupabase.storage
+    .from("product-images")
+    .upload(path, blob, { contentType: "image/jpeg", upsert: true });
+
+  if (!error) {
+    const { data } = storeSupabase.storage.from("product-images").getPublicUrl(path);
+    if (data?.publicUrl) return data.publicUrl;
+  }
+
+  return blobToDataUrl(blob);
+}
+
+productImage.addEventListener("change", async () => {
+  const file = productImage.files[0];
+  if (!file) return;
+
+  setMessage(adminMessage, "Photo ready kar rahe hain...");
+  try {
+    const url = await uploadProductImage(file);
+    setImagePreview(url);
+    setMessage(adminMessage, "Photo add ho gayi. Save Product dabao.", "success");
+  } catch (error) {
+    console.error(error);
+    setMessage(adminMessage, error.message || "Photo add nahi ho saki.", "error");
+  }
+});
+
+removeImageButton.addEventListener("click", () => {
+  productImage.value = "";
+  setImagePreview("");
+});
+
 productForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -189,7 +302,8 @@ productForm.addEventListener("submit", async (event) => {
     category: productCategory.value,
     size: productSize.value.trim(),
     price: Number(productPrice.value),
-    icon: productIcon.value.trim() || "🛠️"
+    icon: productIcon.value.trim() || "🛠️",
+    image_url: productImageUrl.value || null
   };
 
   saveProductButton.disabled = true;
@@ -206,6 +320,32 @@ productForm.addEventListener("submit", async (event) => {
     ({ error } = await storeSupabase
       .from("store_products")
       .insert(payload));
+  }
+
+  if (error && /image_url/i.test(error.message || "")) {
+    delete payload.image_url;
+    if (id) {
+      ({ error } = await storeSupabase
+        .from("store_products")
+        .update(payload)
+        .eq("id", Number(id)));
+    } else {
+      ({ error } = await storeSupabase
+        .from("store_products")
+        .insert(payload));
+    }
+
+    if (!error) {
+      saveProductButton.disabled = false;
+      resetProductForm();
+      setMessage(
+        adminMessage,
+        "Product save ho gaya, lekin photo ke liye Supabase SQL Editor mein ye run karo: alter table store_products add column if not exists image_url text;",
+        "error"
+      );
+      await loadProducts();
+      return;
+    }
   }
 
   saveProductButton.disabled = false;

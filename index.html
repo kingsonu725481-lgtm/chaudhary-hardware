@@ -6,16 +6,36 @@
   <meta name="theme-color" content="#160d0d">
   <meta name="description" content="Chaudhary Hardware & General Store - Pipes, fittings, bathroom, electrical, hardware tools, paints and chemicals in Sitamarhi, Bihar.">
   <title>Chaudhary Hardware & General Store | Sitamarhi</title>
-  <link rel="preload" as="image" href="shop-poster.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="preload" as="image" href="logo.png">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
 
+  <div class="brand-strip" aria-hidden="true">
+    <div class="brand-strip-track">
+      <span>Est. Hardware Store</span>
+      <span>Sitamarhi, Bihar</span>
+      <span>Vishwas Ki Pehchan, Gunvatta Ki Dukaan</span>
+      <span>Pipes · Bathroom · Electrical · Tools · Paints</span>
+      <span>WhatsApp Enquiry</span>
+      <span>Est. Hardware Store</span>
+      <span>Sitamarhi, Bihar</span>
+      <span>Vishwas Ki Pehchan, Gunvatta Ki Dukaan</span>
+      <span>Pipes · Bathroom · Electrical · Tools · Paints</span>
+      <span>WhatsApp Enquiry</span>
+    </div>
+  </div>
+
   <header class="topbar">
     <div class="container nav">
       <a class="brand" href="#home" aria-label="Chaudhary Hardware home">
-        <span class="brand-mark" aria-hidden="true">CH</span>
+        <img class="brand-logo" src="logo.png" alt="Chaudhary Hardware & General Store logo">
         <span class="brand-name">
           <strong>Chaudhary Hardware</strong>
           <small>& General Store</small>
@@ -41,17 +61,23 @@
     <section id="home" class="hero">
       <div class="container hero-grid">
         <div class="hero-copy">
+          <div class="hero-brand-row">
+            <img class="brand-logo hero-logo" src="logo.png" alt="">
+            <span class="hero-since">Sitamarhi’s trusted hardware house</span>
+          </div>
           <span class="eyebrow">QUALITY • VALUE • SERVICE</span>
           <h1>Chaudhary Hardware <span>& General Store</span></h1>
           <p class="tagline">Vishwas Ki Pehchan, Gunvatta Ki Dukaan</p>
           <p class="hero-text">
             Har tarah ke pipes, fittings, electrical aur bathroom products ke saath
-            hardware tools aur paints & chemicals — sab ek hi jagah.
+            hardware tools aur paints & chemicals — sab ek hi branded store mein.
           </p>
 
-          <ul class="hero-highlights" aria-label="Store highlights">
-            <li>5 Product Categories</li>
-            <li>Sitamarhi, Bihar</li>
+          <ul class="hero-stats" aria-label="Store highlights">
+            <li><strong>5+</strong><span>Product categories</span></li>
+            <li><strong>Local</strong><span>Sitamarhi, Bihar</span></li>
+            <li><strong>Photo</strong><span>Real product pictures</span></li>
+            <li><strong>24×7</strong><span>WhatsApp enquiry</span></li>
           </ul>
 
           <div class="hero-actions">
@@ -60,10 +86,30 @@
           </div>
         </div>
 
-        <div class="poster-card">
-          <span class="poster-label">Chaudhary Hardware</span>
-          <img src="shop-poster.png" alt="Chaudhary Hardware & General Store shop poster">
+        <div class="poster-card logo-hero">
+          <img src="logo.png" alt="Chaudhary Hardware & General Store logo">
         </div>
+      </div>
+    </section>
+
+    <section class="brand-promise" aria-label="Brand promise">
+      <div class="container brand-promise-grid">
+        <article>
+          <strong>Genuine range</strong>
+          <p>Pipes, fittings, bathroom, electrical, tools and paints.</p>
+        </article>
+        <article>
+          <strong>Fair prices</strong>
+          <p>Quality products at reasonable local-store rates.</p>
+        </article>
+        <article>
+          <strong>Easy enquiry</strong>
+          <p>Product photo dekho, WhatsApp pe turant poochho.</p>
+        </article>
+        <article>
+          <strong>Sitamarhi store</strong>
+          <p>Visit Madaripur Tower Chowk, Pupri Road.</p>
+        </article>
       </div>
     </section>
 
@@ -72,8 +118,8 @@
         <div class="section-head">
           <div>
             <span class="eyebrow">SHOP BY CATEGORY</span>
-            <h2>Everything you need in one place</h2>
-            <p>Choose a category to view related products.</p>
+            <h2>Shop the Chaudhary range</h2>
+            <p>Choose a category to view related products with photos.</p>
           </div>
         </div>
         <div id="categoryGrid" class="category-grid"></div>
@@ -85,8 +131,8 @@
         <div class="section-head products-head">
           <div>
             <span class="eyebrow">PRODUCT CATALOG</span>
-            <h2>Explore Products</h2>
-            <p>Search by product, category, brand or size.</p>
+            <h2>Product catalogue</h2>
+            <p>Photos, brand, size and price — pehchan ke liye sab saath.</p>
           </div>
 
           <div class="controls">
@@ -172,17 +218,44 @@
   </main>
 
   <footer>
-    <div class="container footer-inner">
-      <div>
-        <strong>Chaudhary Hardware & General Store</strong>
-        <p>Vishwas Ki Pehchan, Gunvatta Ki Dukaan</p>
+    <div class="container footer-brand">
+      <a class="brand" href="#home">
+        <img class="brand-logo" src="logo.png" alt="Chaudhary Hardware & General Store logo">
+        <span class="brand-name">
+          <strong>Chaudhary Hardware</strong>
+          <small>& General Store</small>
+        </span>
+      </a>
+      <p class="footer-tagline">Vishwas Ki Pehchan, Gunvatta Ki Dukaan</p>
+      <div class="footer-links">
+        <a href="#products">Products</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a href="https://wa.me/916203007753" target="_blank" rel="noopener">WhatsApp</a>
       </div>
+    </div>
+    <div class="container footer-inner">
+      <p>Madaripur Tower Chowk, Pupri Road, Sitamarhi, Bihar</p>
       <p>
         © <span id="year"></span> Chaudhary Hardware & General Store
         · <a class="footer-admin-link" href="admin.html">Admin Login</a>
       </p>
     </div>
   </footer>
+
+  <div id="productModal" class="product-modal" hidden>
+    <div class="product-modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button id="closeProductModal" class="modal-close" type="button" aria-label="Close details">×</button>
+      <div id="modalMedia" class="modal-media"></div>
+      <div class="modal-copy">
+        <small id="modalMeta"></small>
+        <h3 id="modalTitle"></h3>
+        <p id="modalSize"></p>
+        <div id="modalPrice" class="price"></div>
+        <a id="modalWhatsapp" class="btn whatsapp" target="_blank" rel="noopener">WhatsApp Enquiry</a>
+      </div>
+    </div>
+  </div>
 
   <a class="floating-wa" href="https://wa.me/916203007753?text=Hello%20Chaudhary%20Hardware%20%26%20General%20Store" target="_blank" rel="noopener" aria-label="Message Chaudhary Hardware on WhatsApp">WA</a>
 

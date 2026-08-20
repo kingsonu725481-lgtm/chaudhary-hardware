@@ -14,6 +14,15 @@ const emptyState = document.querySelector("#emptyState");
 const menuButton = document.querySelector(".menu-btn");
 const navLinks = document.querySelector("#navLinks");
 
+const productModal = document.querySelector("#productModal");
+const modalMedia = document.querySelector("#modalMedia");
+const modalMeta = document.querySelector("#modalMeta");
+const modalTitle = document.querySelector("#modalTitle");
+const modalSize = document.querySelector("#modalSize");
+const modalPrice = document.querySelector("#modalPrice");
+const modalWhatsapp = document.querySelector("#modalWhatsapp");
+const closeProductModal = document.querySelector("#closeProductModal");
+
 let products = [];
 
 function escapeHtml(value) {
@@ -24,6 +33,14 @@ function escapeHtml(value) {
     '"': "&quot;",
     "'": "&#039;"
   }[character]));
+}
+
+function productMedia(product, className) {
+  if (product.image_url) {
+    return `<img class="${className}" src="${escapeHtml(product.image_url)}" alt="${escapeHtml(product.name)}">`;
+  }
+
+  return `<div class="${className} product-img-fallback" aria-hidden="true">${product.icon || "🛠️"}</div>`;
 }
 
 function formatPrice(price) {
@@ -59,14 +76,19 @@ function renderCategories() {
 }
 
 function showProductDetails(product) {
-  alert(
-    `${product.name}\n\n` +
-    `Category: ${product.category}\n` +
-    `Brand: ${product.brand || "-"}\n` +
-    `Size: ${product.size || "-"}\n` +
-    `Price: ${formatPrice(product.price)}\n\n` +
-    `Please contact us on WhatsApp for an enquiry.`
-  );
+  modalMedia.innerHTML = productMedia(product, "modal-photo");
+  modalMeta.textContent = `${product.category} • ${product.brand || "—"}`;
+  modalTitle.textContent = product.name;
+  modalSize.textContent = `Size: ${product.size || "—"}`;
+  modalPrice.textContent = formatPrice(product.price);
+  modalWhatsapp.href = whatsappLink(product);
+  productModal.hidden = false;
+  document.body.style.overflow = "hidden";
+}
+
+function hideProductDetails() {
+  productModal.hidden = true;
+  document.body.style.overflow = "";
 }
 
 function renderProducts() {
@@ -87,7 +109,7 @@ function renderProducts() {
 
   productGrid.innerHTML = matchingProducts.map((product) => `
     <article class="product-card">
-      <div class="product-img" aria-label="${escapeHtml(product.name)}">${product.icon || "🛠️"}</div>
+      <div class="product-img" aria-label="${escapeHtml(product.name)}">${productMedia(product, "product-photo")}</div>
       <div class="product-body">
         <small>${escapeHtml(product.category)} • ${escapeHtml(product.brand || "—")}</small>
         <h3>${escapeHtml(product.name)}</h3>
@@ -109,10 +131,19 @@ function renderProducts() {
 async function loadProducts() {
   productGrid.setAttribute("aria-busy", "true");
 
-  const { data, error } = await storeSupabase
+  let query = storeSupabase
     .from("store_products")
-    .select("id, name, brand, category, size, price, icon")
+    .select("id, name, brand, category, size, price, icon, image_url")
     .order("id", { ascending: true });
+
+  let { data, error } = await query;
+
+  if (error && /image_url/i.test(error.message || "")) {
+    ({ data, error } = await storeSupabase
+      .from("store_products")
+      .select("id, name, brand, category, size, price, icon")
+      .order("id", { ascending: true }));
+  }
 
   productGrid.removeAttribute("aria-busy");
 
@@ -155,6 +186,14 @@ productGrid.addEventListener("click", (event) => {
 
   const product = products.find((item) => item.id === Number(button.dataset.detailsId));
   if (product) showProductDetails(product);
+});
+
+closeProductModal.addEventListener("click", hideProductDetails);
+productModal.addEventListener("click", (event) => {
+  if (event.target === productModal) hideProductDetails();
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") hideProductDetails();
 });
 
 if (menuButton && navLinks) {

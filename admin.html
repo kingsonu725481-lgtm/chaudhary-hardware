@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#160d0d">
   <title>Admin | Chaudhary Hardware</title>
+  <link rel="icon" href="logo.png" type="image/png">
   <link rel="stylesheet" href="admin.css">
 </head>
 <body class="admin-page">
   <header class="admin-topbar">
     <a class="admin-brand" href="index.html">
-      <span>CH</span>
+      <img class="brand-logo" src="logo.png" alt="Chaudhary Hardware logo">
       <strong>Chaudhary Hardware</strong>
     </a>
     <a class="back-link" href="index.html">← View Website</a>
@@ -77,7 +78,16 @@
             <label for="productPrice">Price (₹)</label>
             <input id="productPrice" type="number" min="0" step="0.01" required>
 
-            <label for="productIcon">Product Icon</label>
+            <label for="productImage">Product Photo</label>
+            <input id="productImage" type="file" accept="image/*">
+            <input id="productImageUrl" type="hidden">
+            <div class="image-preview" id="imagePreview">
+              <img id="imagePreviewImg" alt="Product preview" hidden>
+              <span id="imagePreviewText">Photo select karo taaki website pe dikhe.</span>
+            </div>
+            <button id="removeImageButton" class="admin-btn outline-btn" type="button" hidden>Remove Photo</button>
+
+            <label for="productIcon">Fallback Icon</label>
             <input id="productIcon" type="text" value="🛠️" maxlength="8">
 
             <div class="form-actions">
