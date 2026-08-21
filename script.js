@@ -163,7 +163,13 @@ async function loadProducts() {
       products = [];
       productGrid.innerHTML = "";
       emptyState.hidden = false;
-      emptyState.textContent = "Products could not load. Please refresh the page.";
+      
+      // Mobile-friendly error message
+      if (isMobile) {
+        emptyState.textContent = "Unable to load products. Please call: 6203007753";
+      } else {
+        emptyState.textContent = "Products could not load. Please refresh the page.";
+      }
       return;
     }
 
@@ -405,7 +411,13 @@ async function loadProducts() {
       products = [];
       productGrid.innerHTML = "";
       emptyState.hidden = false;
-      emptyState.textContent = "Products could not load. Please refresh the page.";
+      
+      // Mobile-friendly error message
+      if (isMobile) {
+        emptyState.textContent = "Unable to load products. Please call: 6203007753";
+      } else {
+        emptyState.textContent = "Products could not load. Please refresh the page.";
+      }
       return;
     }
 
