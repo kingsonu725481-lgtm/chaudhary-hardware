@@ -13,6 +13,36 @@
   --shadow: 0 22px 60px rgba(0, 0, 0, 0.28);
 }
 
+/* Mobile-specific styles */
+.mobile-device {
+  font-size: 16px;
+}
+
+.mobile-device .container {
+  width: calc(100% - 20px);
+  padding: 0 10px;
+}
+
+.mobile-device .product-grid {
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.mobile-device .category-grid {
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.mobile-device .hero-actions {
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-device .hero-actions .btn {
+  width: 100%;
+  text-align: center;
+}
+
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
