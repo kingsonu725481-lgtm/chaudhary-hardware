@@ -1,9 +1,9 @@
 const categories = [
-  { name: "Pipes & Fittings", icon: "🔧", desc: "PVC pipes, elbows, valves and plumbing fittings." },
-  { name: "Bathroom Products", icon: "🚿", desc: "Taps, showers, basins and bathroom accessories." },
-  { name: "Electrical Products", icon: "⚡", desc: "Switches, sockets, wires, MCBs and accessories." },
-  { name: "Hardware Tools", icon: "🛠️", desc: "Spanners, screwdrivers, pliers and tools." },
-  { name: "Paint & Chemicals", icon: "🎨", desc: "Paints, primers, putty and related chemicals." }
+  { name: "Pipes & Fittings", icon: "ðŸ”§", desc: "PVC pipes, elbows, valves and plumbing fittings." },
+  { name: "Bathroom Products", icon: "ðŸš¿", desc: "Taps, showers, basins and bathroom accessories." },
+  { name: "Electrical Products", icon: "âš¡", desc: "Switches, sockets, wires, MCBs and accessories." },
+  { name: "Hardware Tools", icon: "ðŸ› ï¸", desc: "Spanners, screwdrivers, pliers and tools." },
+  { name: "Paint & Chemicals", icon: "ðŸŽ¨", desc: "Paints, primers, putty and related chemicals." }
 ];
 
 const categoryGrid = document.querySelector("#categoryGrid");
@@ -40,11 +40,11 @@ function productMedia(product, className) {
     return `<img class="${className}" src="${escapeHtml(product.image_url)}" alt="${escapeHtml(product.name)}">`;
   }
 
-  return `<div class="${className} product-img-fallback" aria-hidden="true">${product.icon || "🛠️"}</div>`;
+  return `<div class="${className} product-img-fallback" aria-hidden="true">${product.icon || "ðŸ› ï¸"}</div>`;
 }
 
 function formatPrice(price) {
-  return `₹${Number(price).toLocaleString("en-IN")}`;
+  return `â‚¹${Number(price).toLocaleString("en-IN")}`;
 }
 
 function whatsappLink(product) {
@@ -77,9 +77,9 @@ function renderCategories() {
 
 function showProductDetails(product) {
   modalMedia.innerHTML = productMedia(product, "modal-photo");
-  modalMeta.textContent = `${product.category} • ${product.brand || "—"}`;
+  modalMeta.textContent = `${product.category} â€¢ ${product.brand || "â€”"}`;
   modalTitle.textContent = product.name;
-  modalSize.textContent = `Size: ${product.size || "—"}`;
+  modalSize.textContent = `Size: ${product.size || "â€”"}`;
   modalPrice.textContent = formatPrice(product.price);
   modalWhatsapp.href = whatsappLink(product);
   productModal.hidden = false;
@@ -111,9 +111,9 @@ function renderProducts() {
     <article class="product-card">
       <div class="product-img" aria-label="${escapeHtml(product.name)}">${productMedia(product, "product-photo")}</div>
       <div class="product-body">
-        <small>${escapeHtml(product.category)} • ${escapeHtml(product.brand || "—")}</small>
+        <small>${escapeHtml(product.category)} â€¢ ${escapeHtml(product.brand || "â€”")}</small>
         <h3>${escapeHtml(product.name)}</h3>
-        <small>Size: ${escapeHtml(product.size || "—")}</small>
+        <small>Size: ${escapeHtml(product.size || "â€”")}</small>
         <div class="price">${formatPrice(product.price)}</div>
         <div class="product-actions">
           <a href="${whatsappLink(product)}" target="_blank" rel="noopener">WhatsApp</a>
@@ -131,33 +131,42 @@ function renderProducts() {
 async function loadProducts() {
   productGrid.setAttribute("aria-busy", "true");
 
-  let query = storeSupabase
-    .from("store_products")
-    .select("id, name, brand, category, size, price, icon, image_url")
-    .order("id", { ascending: true });
-
-  let { data, error } = await query;
-
-  if (error && /image_url/i.test(error.message || "")) {
-    ({ data, error } = await storeSupabase
+  try {
+    let query = storeSupabase
       .from("store_products")
-      .select("id, name, brand, category, size, price, icon")
-      .order("id", { ascending: true }));
-  }
+      .select("id, name, brand, category, size, price, icon, image_url")
+      .order("id", { ascending: true });
 
-  productGrid.removeAttribute("aria-busy");
+    let { data, error } = await query;
 
-  if (error) {
-    console.error(error);
+    if (error && /image_url/i.test(error.message || "")) {
+      ({ data, error } = await storeSupabase
+        .from("store_products")
+        .select("id, name, brand, category, size, price, icon")
+        .order("id", { ascending: true }));
+    }
+
+    productGrid.removeAttribute("aria-busy");
+
+    if (error) {
+      console.error(error);
+      products = [];
+      productGrid.innerHTML = "";
+      emptyState.hidden = false;
+      emptyState.textContent = "Products could not load. Please refresh the page.";
+      return;
+    }
+
+    products = data || [];
+    renderProducts();
+  } catch (err) {
+    console.error("Network error:", err);
+    productGrid.removeAttribute("aria-busy");
     products = [];
     productGrid.innerHTML = "";
     emptyState.hidden = false;
-    emptyState.textContent = "Products could not load. Please refresh the page.";
-    return;
+    emptyState.textContent = "Network error. Please check your connection and refresh.";
   }
-
-  products = data || [];
-  renderProducts();
 }
 
 function closeMenu() {
