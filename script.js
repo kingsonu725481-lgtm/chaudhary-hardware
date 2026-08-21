@@ -6,6 +6,9 @@ const categories = [
   { name: "Paint & Chemicals", icon: "🎨", desc: "Paints, primers, putty and related chemicals." }
 ];
 
+// Mobile detection
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
 const categoryGrid = document.querySelector("#categoryGrid");
 const productGrid = document.querySelector("#productGrid");
 const search = document.querySelector("#search");
@@ -24,6 +27,12 @@ const modalWhatsapp = document.querySelector("#modalWhatsapp");
 const closeProductModal = document.querySelector("#closeProductModal");
 
 let products = [];
+
+// Mobile-specific initialization
+if (isMobile) {
+  console.log("Mobile device detected - optimizing for mobile");
+  document.body.classList.add('mobile-device');
+}
 
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, (character) => ({
@@ -131,33 +140,48 @@ function renderProducts() {
 async function loadProducts() {
   productGrid.setAttribute("aria-busy", "true");
 
-  let query = storeSupabase
-    .from("store_products")
-    .select("id, name, brand, category, size, price, icon, image_url")
-    .order("id", { ascending: true });
-
-  let { data, error } = await query;
-
-  if (error && /image_url/i.test(error.message || "")) {
-    ({ data, error } = await storeSupabase
+  try {
+    let query = storeSupabase
       .from("store_products")
-      .select("id, name, brand, category, size, price, icon")
-      .order("id", { ascending: true }));
-  }
+      .select("id, name, brand, category, size, price, icon, image_url")
+      .order("id", { ascending: true });
 
-  productGrid.removeAttribute("aria-busy");
+    let { data, error } = await query;
 
-  if (error) {
-    console.error(error);
+    if (error && /image_url/i.test(error.message || "")) {
+      ({ data, error } = await storeSupabase
+        .from("store_products")
+        .select("id, name, brand, category, size, price, icon")
+        .order("id", { ascending: true }));
+    }
+
+    productGrid.removeAttribute("aria-busy");
+
+    if (error) {
+      console.error(error);
+      products = [];
+      productGrid.innerHTML = "";
+      emptyState.hidden = false;
+      emptyState.textContent = "Products could not load. Please refresh the page.";
+      return;
+    }
+
+    products = data || [];
+    renderProducts();
+  } catch (err) {
+    console.error("Network error:", err);
+    productGrid.removeAttribute("aria-busy");
     products = [];
     productGrid.innerHTML = "";
     emptyState.hidden = false;
-    emptyState.textContent = "Products could not load. Please refresh the page.";
-    return;
+    
+    // Mobile-specific error message
+    if (isMobile) {
+      emptyState.textContent = "Unable to load products. Check your internet connection and try again.";
+    } else {
+      emptyState.textContent = "Network error. Please check your connection and refresh.";
+    }
   }
-
-  products = data || [];
-  renderProducts();
 }
 
 function closeMenu() {
